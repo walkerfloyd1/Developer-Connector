@@ -1,0 +1,3 @@
+{
+    "mongoURI": "mongodb+srv://walkerfloyd:walkerfloyd@connector-ozqt3.mongodb.net/test?retryWrites=true&w=majority"
+}
