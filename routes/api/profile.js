@@ -220,4 +220,35 @@ async (req, res) => {
     }
 });
 
+// DELETE api/profile/experience/:exp_id
+// @desc Delete profile experience
+// @access Private
+
+router.delete('/experience/:exp_id', auth, async (req, res) => {
+    try {
+        const foundProfile = await Profile.findOne({ user: req.user.id });
+        const expIds = foundProfile.experience.map(exp => exp._id.toString());
+
+        // GET remove index
+        const removeIndex = expIds.indexOf(req.params.exp_id);
+        
+        if (removeIndex === -1) {
+            return res.status(500).json({ msg: "Server error" });
+          } else {
+            // theses console logs helped me figure it out
+            console.log("expIds", expIds);
+            console.log("typeof expIds", typeof expIds);
+            console.log("req.params", req.params);
+            console.log("removed", expIds.indexOf(req.params.exp_id));
+            foundProfile.experience.splice(removeIndex, 1);
+            await foundProfile.save();
+            return res.status(200).json(foundProfile);
+          }
+    } catch (err) {
+        console.error(err.message);
+        res.status(500).send('Server Error')
+    }
+}
+);
+
 module.exports = router;
