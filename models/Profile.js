@@ -1,8 +1,8 @@
-const mongoose = require("mongoose");
+const mongoose = require('mongoose');
 
 const ProfileSchema = new mongoose.Schema({
     user: {
-        type:mongoose.Schema.Types.ObjectId,
+        type: mongoose.Schema.Types.ObjectId,
         ref: 'user'
     },
     company: {
@@ -28,7 +28,8 @@ const ProfileSchema = new mongoose.Schema({
     githubusername: {
         type: String
     },
-    experience: [{
+    experience: [
+        {
             title: {
                 type: String,
                 required: true
@@ -54,9 +55,10 @@ const ProfileSchema = new mongoose.Schema({
             description: {
                 type: String
             }
-        
-    }],
-    education: [{
+        }
+    ],
+    education: [
+        {
         school: {
             type: String,
             required: true
@@ -83,12 +85,13 @@ const ProfileSchema = new mongoose.Schema({
         description: {
             type: String
         }
-    
-}],
+    }
+],
     social: {
         youtube: {
             type: String
-        }, twitter: {
+        }, 
+        twitter: {
             type: String
         },
         facebook: {

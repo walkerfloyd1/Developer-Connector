@@ -1,7 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const auth = require('../../middleware/auth');
-const { check, validationResult } = require("express-validator");
+const { check, validationResult } = require("express-validator/check");
 
 const Profile = require('../../models/Profile');
 const User = require('../../models/User');
@@ -30,7 +30,8 @@ router.get('/me', auth, async (req, res) => {
 router.post('/', [ auth, [
     check('status', 'Status is required').not().isEmpty(),
     check('skills', 'Skills is required').not().isEmpty()
-]], async (req, res) => {
+]], 
+async (req, res) => {
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
         return res.status(400).json({
@@ -45,7 +46,7 @@ router.post('/', [ auth, [
     //Build Profile object
 
     const profileFields = {};
-    profileFields.user = req.body.id;
+    profileFields.user = req.user.id;
 
     if (company) {
         profileFields.company = company;
@@ -117,7 +118,7 @@ router.post('/', [ auth, [
 
 router.get('/', async (req, res) => {
     try {
-        const profiles = await Profile.find().populate('user', ['name', 'avatar']);
+        const profiles = await Profile.find().populate({ model: 'user', path: 'user', select: ['name', 'avatar']});
         res.json(profiles);
     } catch(err) {
         console.error(err.message);
@@ -131,11 +132,12 @@ router.get('/', async (req, res) => {
 
 router.get('/user/:user_id', async (req, res) => {
     try {
-        const profile = await Profile.findOne({ user: req.params.user_id }).populate('user', ['name', 'avatar']);
+        const profile = await Profile.findOne({ user: req.params.user_id }).populate('user', 
+        ['name', 'avatar']);
 
-        if (!profile) {
-            return res.status(400).json({ msg: "Profile Not Found!!"})
-        };
+        if (!profile) 
+            return res.status(400).json({ msg: "Profile Not Found!! "})
+        ;
         res.json(profile);
     } catch(err) {
         console.error(err.message);
@@ -154,8 +156,10 @@ router.delete('/', auth, async (req, res) => {
     try {
         // todo- remove users posts
         // remove profile
-        await Profile.findOneAndRemove({ user: req.user.id });
-        await User.findOneAndRemove({ _id: req.user.id });
+        await Profile.findOneAndDelete({ user: req.user.id });
+
+        //remove user
+        await User.findOneAndDelete({ _id: req.user.id });
         res.json({ msg: "User deleted" });
     } catch(err) {
         console.error(err.message);
@@ -167,7 +171,9 @@ router.delete('/', auth, async (req, res) => {
 // @desc Add profile experience
 // @access Private
 
-router.put('/experience', [auth, [
+router.put('/experience', 
+[ auth, 
+    [
     check('title', 'Title is required').not().isEmpty(),
     check('company', 'Company is required').not().isEmpty(),
     check('from', 'From Date is required').not().isEmpty()
@@ -201,9 +207,7 @@ async (req, res) => {
     };
 
     try {
-        const profile = await Profile.findOne({ user: req.user.id });
-
-        if (!profile) {return res.status(400).send('No profile found.');}
+        const profile = await Profile.findOne({ user: req.user.id })
 
         profile.experience.unshift(newExp);
 
