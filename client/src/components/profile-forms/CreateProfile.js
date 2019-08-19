@@ -1,9 +1,11 @@
 import React, { useState, Fragment } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
+import { createProfile } from '../../actions/profile';
+import { Link, withRouter } from 'react-router-dom';
 
 
-const CreateProfile = props => {
+const CreateProfile = ({ createProfile, history }) => {
     const [formData, setFormData] = useState({
         company: '',
         website: '',
@@ -39,7 +41,12 @@ const CreateProfile = props => {
     const onChange = e => setFormData({
         ...formData,
         [e.target.name]: e.target.value
-    })
+    });
+
+    const onSubmit = e => {
+      e.preventDefault();
+      createProfile(formData, history);
+    }
 
     return (
         <Fragment>
@@ -51,11 +58,12 @@ const CreateProfile = props => {
         profile stand out
       </p>
       <small>* = required field</small>
-      <form className="form">
+      <form className="form"
+      onSubmit={e => onSubmit(e)}>
         <div className="form-group">
           <select name="status" 
           value={status}
-          onCHange={e => onChange(e)}>
+          onChange={e => onChange(e)}>
             <option value="0">* Select Professional Status</option>
             <option value="Developer">Developer</option>
             <option value="Junior Developer">Junior Developer</option>
@@ -75,7 +83,7 @@ const CreateProfile = props => {
           placeholder="Company" 
           name="company" 
           value={company} 
-          onCHange={e => onChange(e)}/>
+          onChange={e => onChange(e)}/>
           <small className="form-text"
             >Could be your own company or one you work for</small
           >
@@ -85,7 +93,7 @@ const CreateProfile = props => {
           placeholder="Website" 
           name="website" 
           value={website} 
-          onCHange={e => onChange(e)}/>
+          onChange={e => onChange(e)}/>
           <small className="form-text"
             >Could be your own or a company website</small
           >
@@ -95,7 +103,7 @@ const CreateProfile = props => {
           placeholder="Location" 
           name="location"
           value={location} 
-          onCHange={e => onChange(e)} />
+          onChange={e => onChange(e)} />
           <small className="form-text"
             >City & state suggested (eg. Boston, MA)</small
           >
@@ -105,7 +113,7 @@ const CreateProfile = props => {
           placeholder="* Skills" 
           name="skills" 
           value={skills} 
-          onCHange={e => onChange(e)}/>
+          onChange={e => onChange(e)}/>
           <small className="form-text"
             >Please use comma separated values (eg.
             HTML,CSS,JavaScript,PHP)</small
@@ -128,7 +136,7 @@ const CreateProfile = props => {
           <textarea placeholder="A short bio of yourself" 
           name="bio"
           value={bio} 
-          onCHange={e => onChange(e)}></textarea>
+          onChange={e => onChange(e)}></textarea>
           <small className="form-text">Tell us a little about yourself</small>
         </div>
 
@@ -149,7 +157,7 @@ const CreateProfile = props => {
           placeholder="Facebook URL" 
           name="facebook" 
           value={facebook} 
-          onCHange={e => onChange(e)}/>
+          onChange={e => onChange(e)}/>
         </div>
 
         <div className="form-group social-input">
@@ -158,7 +166,7 @@ const CreateProfile = props => {
           placeholder="YouTube URL" 
           name="youtube" 
           value={youtube} 
-          onCHange={e => onChange(e)}/>
+          onChange={e => onChange(e)}/>
         </div>
 
         <div className="form-group social-input">
@@ -167,7 +175,7 @@ const CreateProfile = props => {
           placeholder="Linkedin URL" 
           name="linkedin" 
           value={linkedin} 
-          onCHange={e => onChange(e)}/>
+          onChange={e => onChange(e)}/>
         </div>
 
         <div className="form-group social-input">
@@ -176,7 +184,7 @@ const CreateProfile = props => {
           placeholder="Instagram URL" 
           name="instagram" 
           value={instagram} 
-          onCHange={e => onChange(e)}/>
+          onChange={e => onChange(e)}/>
         </div>
         <div className="form-group social-input">
           <i className="fab fa-twitter fa-2x"></i>
@@ -184,7 +192,7 @@ const CreateProfile = props => {
           placeholder="Twitter URL" 
           name="twitter" 
           value={twitter} 
-          onCHange={e => onChange(e)}/>
+          onChange={e => onChange(e)}/>
         </div>
         </Fragment>}
 
@@ -197,7 +205,7 @@ const CreateProfile = props => {
 }
 
 CreateProfile.propTypes = {
-
+  createProfile: PropTypes.func.isRequired,
 }
 
-export default CreateProfile
+export default connect(null, { createProfile })(withRouter(CreateProfile));
