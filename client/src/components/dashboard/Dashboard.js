@@ -11,7 +11,7 @@ import Education from './Education';
 const Dashboard = ({ getCurrentProfile, auth: { user }, profile: { profile, loading }, deleteAccount}) => {
     useEffect(() => {
         getCurrentProfile();
-    }, []);
+    }, [getCurrentProfile]);
 
     //if user exists, show user name
 
